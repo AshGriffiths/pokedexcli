@@ -5,9 +5,17 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/ashgriffiths/pokedexcli/internal/pokeapi"
 )
 
-func startPokedex() {
+type config struct {
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
+}
+
+func startPokedex(cfg *config) {
 	prompt := "pokedex > "
 	inputReader := bufio.NewScanner(os.Stdin)
 	for {
@@ -24,7 +32,7 @@ func startPokedex() {
 		do, ok := getActions()[actionName]
 
 		if ok {
-			err := do.callback()
+			err := do.callback(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
